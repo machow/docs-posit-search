@@ -1,0 +1,16 @@
+# Mac
+.DS_Store
+
+# Vim
+.*.sw[po]
+
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv

@@ -1,0 +1,42 @@
+name: Build and Deploy
+on: [push]
+permissions:
+  contents: write
+jobs:
+  build-and-deploy:
+    concurrency: ci-${{ github.ref }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v4
+
+      # python ----
+      - uses: actions/checkout@v2
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+      - name: "Set up Python"
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
+
+      # quarto docs build ----
+      - uses: quarto-dev/quarto-actions/setup@v2
+
+      - name: Build docs
+        run: |
+          cd docs
+          quarto render
+          cp search.json _site/search.json
+
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4
+        if: ${{ github.ref == 'refs/heads/main' }}
+        with:
+          force: false
+          folder: docs/_site
+          clean-exclude: pr-preview
+
+      - name: Deploy (preview)
+        uses: rossjrw/pr-preview-action@v1
+        with:
+          source-dir: docs/_site
