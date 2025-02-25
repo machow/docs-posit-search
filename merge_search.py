@@ -6,6 +6,13 @@ from pydantic import BaseModel
 from urllib import parse
 from pathlib import Path
 
+URLS = [
+    "https://docs.posit.co/",
+    "https://docs.posit.co/helm/",
+    "https://docs.posit.co/connect/",
+    "https://docs.posit.co/ide/server-pro",
+]
+
 
 class SearchItem(BaseModel):
     objectID: str
@@ -14,14 +21,6 @@ class SearchItem(BaseModel):
     section: str  # section name
     text: str  # section text
     crumbs: list[str]  # shown in nav display, lists path to nested page
-
-
-urls = [
-    "https://docs.posit.co/",
-    "https://docs.posit.co/helm/",
-    "https://docs.posit.co/connect/",
-    "https://docs.posit.co/ide/server-pro",
-]
 
 
 def make_absolute(search_items: list[dict], url: str) -> list[dict]:
@@ -43,7 +42,7 @@ def make_absolute(search_items: list[dict], url: str) -> list[dict]:
 
 merged_search_items = []
 
-for url in urls:
+for url in URLS:
     url = url.removesuffix("/")
     r = requests.get(f"{url}/search.json")
     r.raise_for_status()
