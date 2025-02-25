@@ -1,5 +1,5 @@
 name: Build and Deploy
-on: [push]
+on: [push, pull_request]
 permissions:
   contents: write
 jobs:
@@ -38,5 +38,7 @@ jobs:
 
       - name: Deploy (preview)
         uses: rossjrw/pr-preview-action@v1
+        # if in a PR
+        if: ${{ github.event_name == 'pull_request' }}
         with:
           source-dir: docs/_site
