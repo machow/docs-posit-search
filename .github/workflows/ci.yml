@@ -9,6 +9,7 @@ jobs:
     permissions:
       pull-requests: write
       actions: write
+      contents: write
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v4
