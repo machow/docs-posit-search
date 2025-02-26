@@ -3,6 +3,12 @@
 This repo experiments with combining search across multiple posit.co documentation sites.
 It's not meant to be used for important situations, but to prototype ways of improving search with Quarto.
 
+## How does it work?
+
+* `merge_search.py` combines a bunch of search indexes from different Posit doc sites.
+* Michael uploaded the merged index into algolia by hand.
+* The starter applications (e.g. `app-shiny`) have basic algolia queries wired up, with search credentials.
+
 ## Starter applications
 
 There are two folders with starter applications:
