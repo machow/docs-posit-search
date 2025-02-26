@@ -40,6 +40,12 @@ def make_absolute(search_items: list[dict], url: str) -> list[dict]:
     return absolute_search_items
 
 
+def shorten_text(text: str, max_length: int) -> str:
+    if len(text) > max_length:
+        return text[:max_length] + "...SHORTENED"
+    return text
+
+
 merged_search_items = []
 
 for url in URLS:
@@ -53,4 +59,10 @@ for url in URLS:
 with open("docs/search.json", "w") as f:
     json.dump(merged_search_items, f)
 
+with open("docs/search2.json", "w") as f:
+    short = [{**d, "text": shorten_text(d["text"], 8_000)} for d in merged_search_items]
+    json.dump(short, f)
+
+
+len(str(data[385]))
 # %%

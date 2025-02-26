@@ -5,9 +5,11 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
+    "algoliasearch>=4.13.2",
     "great-tables>=0.16.1",
     "polars>=1.23.0",
     "requests>=2.32.3",
+    "shiny>=1.2.1",
 ]
 
 [dependency-groups]
