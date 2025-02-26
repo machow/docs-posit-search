@@ -1,5 +1,5 @@
 ---
-title: "Posit docs confederated search"
+title: "Posit docs federated search"
 ---
 
 This site provides a searchbar that searches across several Posit documentation sites.
