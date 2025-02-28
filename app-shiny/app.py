@@ -1,6 +1,10 @@
+from __future__ import annotations
+
 import polars as pl
 import polars.selectors as cs
 from shiny.express import input, render, ui
+from shiny import reactive
+from typing import Callable
 from algoliasearch.search.client import SearchClient
 from algoliasearch.search.models.hit import Hit
 
@@ -10,18 +14,25 @@ client = SearchClient("GCKGO8JWSW", "6acc5580fcbeba5b8e560c8a546f346d")
 # dict helpers ----
 
 
-def fetch_path(d: dict, key: str):
+def fetch_path(d: dict, key: str, default: Callable):
+    """Fetch a nested key from a dictionary, with a default value.
+
+    The use of a default is largely because some search entries lack a "crumb".
+    """
     keys = key.split(".")
-    for k in keys:
-        d = d[k]
+    try:
+        for k in keys:
+            d = d[k]
+    except KeyError:
+        return default()
 
     return d
 
 
-def filter_dict(d: dict, keys: list[str]) -> dict:
+def filter_dict(d: dict, keys: dict[str, Callable]) -> dict:
     results = {}
-    for key in keys:
-        results[key] = fetch_path(d, key)
+    for key, default in keys.items():
+        results[key] = fetch_path(d, key, default)
 
     return results
 
@@ -90,9 +101,8 @@ a.result-url:hover .result-subcard {
 ui.input_text("text", label="Search", value="SSL workbench")
 
 
-# resp.results[0].actual_instance.hits
-@render.data_frame
-async def search_results():
+@reactive.calc
+async def results():
     res = await client.search(
         search_method_params={
             "requests": [
@@ -106,14 +116,14 @@ async def search_results():
 
     # Note that these fields are based on the ones in our
     # algolia index. I.e. our search.json has fields named title, section, etc..
-    paths = [
-        "objectID",
-        "_highlightResult.title.value",
-        "_highlightResult.section.value",
-        "_highlightResult.text.value",
-        "indexName",
-        "crumbs",
-    ]
+    paths = {
+        "objectID": str,
+        "_highlightResult.title.value": str,
+        "_highlightResult.section.value": str,
+        "_highlightResult.text.value": str,
+        "indexName": str,
+        "crumbs": lambda: [""],
+    }
 
     df_search = hits_to_frame(
         res.results[0].actual_instance.hits,
@@ -160,4 +170,16 @@ async def search_results():
         .select("card")
     )
 
-    return render.DataGrid(final, filters=True, width="100%")
+    return final
+
+
+@render.text
+async def row_count():
+    res = await results()
+    return f"Results: {len(res)}"
+
+
+@render.data_frame
+async def search_results():
+    res = await results()
+    return render.DataGrid(res, filters=True, width="100%", height="80vh")
