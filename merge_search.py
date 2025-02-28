@@ -6,12 +6,12 @@ from pydantic import BaseModel
 from urllib import parse
 from pathlib import Path
 
-URLS = [
-    "https://docs.posit.co/",
-    "https://docs.posit.co/helm/",
-    "https://docs.posit.co/connect/",
-    "https://docs.posit.co/ide/server-pro",
-]
+URLS = {
+    "ide": "https://docs.posit.co/",
+    "helm": "https://docs.posit.co/helm/",
+    "connect": "https://docs.posit.co/connect/",
+    "server-pro": "https://docs.posit.co/ide/server-pro",
+}
 
 
 class SearchItem(BaseModel):
@@ -23,7 +23,7 @@ class SearchItem(BaseModel):
     crumbs: list[str]  # shown in nav display, lists path to nested page
 
 
-def make_absolute(search_items: list[dict], url: str) -> list[dict]:
+def make_absolute(search_items: list[dict], url: str, index_name: str) -> list[dict]:
     absolute_search_items = []
 
     for search_item in search_items:
@@ -32,7 +32,7 @@ def make_absolute(search_items: list[dict], url: str) -> list[dict]:
             search_item.update(
                 {
                     "objectID": f"{url}/{search_item['objectID']}",
-                    "href": f"{url}/{search_item['href']}",
+                    "indexName": index_name,
                 }
             )
         absolute_search_items.append(search_item)
@@ -48,12 +48,12 @@ def shorten_text(text: str, max_length: int) -> str:
 
 merged_search_items = []
 
-for url in URLS:
+for name, url in URLS.items():
     url = url.removesuffix("/")
     r = requests.get(f"{url}/search.json")
     r.raise_for_status()
     search_items = r.json()
-    merged_search_items.extend(make_absolute(search_items, url))
+    merged_search_items.extend(make_absolute(search_items, url, name))
 
 # %%
 with open("docs/search.json", "w") as f:
@@ -64,5 +64,4 @@ with open("docs/search2.json", "w") as f:
     json.dump(short, f)
 
 
-len(str(data[385]))
 # %%
