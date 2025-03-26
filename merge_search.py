@@ -7,7 +7,7 @@ from urllib import parse
 from pathlib import Path
 
 URLS = {
-    "ide": "https://docs.posit.co/",
+    "base": "https://docs.posit.co/",
     "helm": "https://docs.posit.co/helm/",
     "connect": "https://docs.posit.co/connect/",
     "server-pro": "https://docs.posit.co/ide/server-pro",
