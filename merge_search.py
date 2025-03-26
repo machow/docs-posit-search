@@ -2,16 +2,24 @@
 # This code was supplied by Jeroen
 import requests
 import json
+import yaml
 from pydantic import BaseModel
 from urllib import parse
 from pathlib import Path
 
-URLS = {
-    "base": "https://docs.posit.co/",
-    "helm": "https://docs.posit.co/helm/",
-    "connect": "https://docs.posit.co/connect/",
-    "server-pro": "https://docs.posit.co/ide/server-pro",
-}
+# URLS = {
+#     "base": "https://docs.posit.co/",
+#     "helm": "https://docs.posit.co/helm/",
+#     "connect": "https://docs.posit.co/connect/",
+#     "server-pro": "https://docs.posit.co/ide/server-pro",
+# }
+
+
+def fetch_url_data():
+    base_url = "https://docs.posit.co"
+    data = yaml.safe_load(open("./merge_data.yml"))
+    name_url = {entry["name"]: f"{base_url}/{entry['path']}" for entry in data}
+    return name_url
 
 
 class SearchItem(BaseModel):
@@ -48,7 +56,8 @@ def shorten_text(text: str, max_length: int) -> str:
 
 merged_search_items = []
 
-for name, url in URLS.items():
+all_urls = fetch_url_data()
+for name, url in all_urls.items():
     url = url.removesuffix("/")
     r = requests.get(f"{url}/search.json")
     r.raise_for_status()

@@ -1,52 +1,16 @@
 from __future__ import annotations
 
+import yaml
 import polars as pl
-import polars.selectors as cs
 from shiny.express import input, render, ui
 from shiny import reactive
-from typing import Callable
 from algoliasearch.search.client import SearchClient
-from algoliasearch.search.models.hit import Hit
+
+from _utils import query
+
+ALL_PRODUCTS = [entry["name"] for entry in yaml.safe_load(open("./merge_data.yml"))]
 
 client = SearchClient("GCKGO8JWSW", "6acc5580fcbeba5b8e560c8a546f346d")
-
-
-# dict helpers ----
-
-
-def fetch_path(d: dict, key: str, default: Callable):
-    """Fetch a nested key from a dictionary, with a default value.
-
-    The use of a default is largely because some search entries lack a "crumb".
-    """
-    keys = key.split(".")
-    try:
-        for k in keys:
-            d = d[k]
-    except KeyError:
-        return default()
-
-    return d
-
-
-def filter_dict(d: dict, keys: dict[str, Callable]) -> dict:
-    results = {}
-    for key, default in keys.items():
-        results[key] = fetch_path(d, key, default)
-
-    return results
-
-
-# algolia helpers ----
-
-
-def expr_base_url_path(col: pl.Expr) -> pl.Expr:
-    return col.str.split("#").list.get(0)
-
-
-def hits_to_frame(hits: list[Hit], key_paths: list[str]) -> pl.DataFrame:
-    rows = [filter_dict(hit.to_dict(), key_paths) for hit in hits]
-    return pl.DataFrame(rows)
 
 
 def html_search_hit_card(
@@ -98,59 +62,56 @@ a.result-url:hover .result-subcard {
 }
 """
 )
-ui.input_text("text", label="Search", value="SSL workbench")
+
+
+@reactive.calc
+async def query_df() -> pl.DataFrame:
+    return await query(client, input.text())
+
+
+@reactive.effect
+async def update_product_filter():
+    res = await query_df()
+    hits = res.unique("breadcrumbs").group_by("indexName").len("n").to_dicts()
+    hit_choices = {row["indexName"]: f"{row['indexName']} ({row['n']})" for row in hits}
+    all_choices = {k: hit_choices.get(k, f"{k} (0)") for k in ALL_PRODUCTS}
+
+    ui.update_checkbox_group("product_name", choices=all_choices, selected=None)
+
+
+@reactive.effect
+async def update_guide_filter():
+    res = await query_df()
+    if input.product_name():
+        filtered = res.filter(pl.col("indexName").is_in(input.product_name()))
+    else:
+        filtered = res
+    guide_counts = (
+        filtered.unique("breadcrumbs")
+        .select(guide=pl.col("crumbs").list.get(0))
+        .group_by("guide")
+        .len("n")
+        .to_dicts()
+    )
+
+    choices = {row["guide"]: f"{row['guide']} ({row['n']})" for row in guide_counts}
+
+    ui.update_checkbox_group("guide_name", choices=choices, selected=None)
 
 
 @reactive.calc
 async def results():
-    res = await client.search(
-        search_method_params={
-            "requests": [
-                {
-                    "indexName": "search",
-                    "query": input.text(),
-                }
-            ]
-        }
-    )
-
-    # Note that these fields are based on the ones in our
-    # algolia index. I.e. our search.json has fields named title, section, etc..
-    paths = {
-        "objectID": str,
-        "_highlightResult.title.value": str,
-        "_highlightResult.section.value": str,
-        "_highlightResult.text.value": str,
-        "indexName": str,
-        "crumbs": lambda: [""],
-    }
-
-    df_search = hits_to_frame(
-        res.results[0].actual_instance.hits,
-        paths,
-    )
-
-    shortened = df_search.with_columns(
-        cs.starts_with("_highlight").str.slice(0, 200)
-    ).select(
-        pl.col("objectID").alias("href"),
-        "crumbs",
-        "indexName",
-        # pl.col("objectID").map_elements(lambda x: ui.tags.a(x, href=x)).alias("url"),
-        cs.starts_with("_highlight").name.map(lambda x: x.split(".")[1]),
-    )
+    res = await query_df()
 
     final = (
-        shortened.select(
+        res.select(
             "title",
+            "breadcrumbs",
             "crumbs",
             card=pl.struct(["section", "text", "href"]).map_elements(
                 lambda x: html_search_hit_subcard(**x)
             ),
             base=pl.col("indexName"),
-        )
-        .with_columns(
-            breadcrumbs=pl.col("base") + " > " + pl.col("crumbs").list.join(" > ")
         )
         .with_row_index("order")
         .group_by("base", "breadcrumbs", "title")
@@ -167,19 +128,39 @@ async def results():
             ),
         )
         .sort("order")
-        .select("card")
     )
-
     return final
 
 
-@render.text
-async def row_count():
+async def filtered_results() -> pl.DataFrame:
     res = await results()
-    return f"Results: {len(res)}"
+    products = input.product_name()
+    guides = input.guide_name()
+
+    if products:
+        res = res.filter(pl.col("base").is_in(products))
+    if guides:
+        res = res.filter(
+            pl.col("breadcrumbs").str.split(" > ").list.get(1).is_in(guides)
+        )
+
+    return res
 
 
-@render.data_frame
-async def search_results():
-    res = await results()
-    return render.DataGrid(res, filters=True, width="100%", height="80vh")
+with ui.layout_sidebar():
+    with ui.sidebar(id="left"):
+        ui.input_text("text", label="Search", value="SSL workbench")
+        ui.input_checkbox_group("product_name", label="Product", choices=[])
+        ui.input_checkbox_group("guide_name", label="Product Guide", choices=[])
+
+    @render.text
+    async def row_count():
+        res = await filtered_results()
+        return f"Results: {len(res)}"
+
+    @render.data_frame
+    async def search_results():
+        res = await filtered_results()
+        return render.DataGrid(
+            res.select("card"), filters=True, width="100%", height="80vh"
+        )
