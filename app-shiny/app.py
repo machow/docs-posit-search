@@ -1,10 +1,16 @@
 from __future__ import annotations
 
+import sys
 import yaml
 import polars as pl
+from pathlib import Path
 from shiny.express import input, render, ui
 from shiny import reactive
 from algoliasearch.search.client import SearchClient
+
+# needed for posit cloud deployment, which might be
+# running shiny app from root of repo.
+sys.path.append(str(Path(__file__).parent))
 
 from _utils import query
 

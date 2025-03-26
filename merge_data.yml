@@ -1,0 +1,57 @@
+# NOTE: all of these entries are listed on docs.posit.co in the 
+# Product topnav dropdown. (Except for the entries marked at the end)
+- name: base
+  path: ""
+  github_url: https://github.com/rstudio/docs.rstudio.com
+
+
+# Posit Team ---------------------
+
+# workbench
+- name: workbench-admin
+  path: "ide/server-pro"
+  github_url: https://github.com/rstudio/rstudio-pro/tree/main/docs/server
+- name: workbench-user
+  path: "ide/server-pro/user"
+  github_url: https://github.com/rstudio/rstudio-pro/tree/main/docs/user/
+- name: workbench-licenses
+  path: "ide/licenses"
+  github_url: https://github.com/rstudio/rstudio-pro/tree/main/docs/licenses
+
+# connect
+- name: connect
+  path: "connect"
+  github_url: https://github.com/posit-dev/connect/tree/main/docs
+
+# package manager
+# NOTE: this site uses mkdocs. It has a search_index.json file, though.
+# in rspm/search/search_index.json
+#- name: rspm
+#  path: rspm/admin
+#  github_url: https://github.com/rstudio/package-manager/tree/master/docs
+
+
+# RStudio IDE & Desktop ----------
+- name: ide-user
+  path: "ide/user"
+  github_url: https://github.com/rstudio/rstudio/tree/main/docs/user/rstudio
+
+- name: ide-pro
+  path: "ide/desktop-pro"
+  github_url: https://github.com/rstudio/rstudio-pro/tree/main/docs/desktop
+
+
+# Cloud and shinyapps.io ---------
+- name: posit-cloud
+  path: "cloud"
+  github_url: https://github.com/posit-hosted/lucid-cloudyr-docs
+
+- name: shinyapps
+  path: "shinyapps.io"
+  github_url: https://github.com/rstudio/shinyapps-users-guide
+
+
+# not a product ------------------
+- name: helm 
+  path: "helm"
+  github_url: https://github.com/rstudio/helm
