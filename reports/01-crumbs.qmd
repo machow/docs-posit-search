@@ -1,0 +1,111 @@
+---
+title: "Analyze Breadcrumbs"
+jupyter: python3
+---
+
+```{python}
+from reactable import Reactable, embed_css
+import polars as pl
+import yaml
+import os
+from algoliasearch.search.client import SearchClient
+from algoliasearch.search.models.hit import Hit
+from dotenv import load_dotenv, find_dotenv
+
+from typing import Callable
+
+
+embed_css()
+
+load_dotenv(find_dotenv())
+
+ALL_PRODUCTS = [entry["name"] for entry in yaml.safe_load(open("../merge_data.yml"))]
+
+client = SearchClient(os.environ["ALGOLIA_APP_ID"], os.environ["ALGOLIA_API_KEY_WRITE"])
+
+```
+
+```{python}
+def fetch_path(d: dict, key: str, default: Callable):
+    """Fetch a nested key from a dictionary, with a default value.
+
+    The use of a default is largely because some search entries lack a "crumb".
+    """
+    keys = key.split(".")
+    try:
+        for k in keys:
+            d = d[k]
+    except KeyError:
+        return default()
+
+    return d
+
+
+def filter_dict(d: dict, keys: dict[str, Callable]) -> dict:
+    results = {}
+    for key, default in keys.items():
+        results[key] = fetch_path(d, key, default)
+
+    return results
+
+
+def hits_to_frame(hits: list[Hit], key_paths: dict[str, Callable]) -> pl.DataFrame:
+    rows = [filter_dict(hit.to_dict(), key_paths) for hit in hits]
+    return pl.DataFrame(rows)
+
+```
+
+## Fetch data
+
+```{python}
+
+# results  = await client.browse("shiny-prototype")
+
+all_results = []
+_ = await client.browse_objects(
+    "shiny-prototype", aggregator=lambda br: all_results.extend(br.hits)
+)
+
+
+```
+
+
+```{python}
+paths = {
+    "objectID": str,
+    "title": str,
+    "section": str,
+    "text": str,
+    "indexName": str,
+    "crumbs": lambda: [""],
+}
+
+df_search = hits_to_frame(
+    all_results,
+    paths,
+)
+```
+
+## What first crumbs do subsites use?
+
+```{python}
+tbl_distinct_crumb = df_search.with_columns(crumb0=pl.col("crumbs").list.get(0)).unique(
+    ["indexName", "crumb0"]
+)
+
+# base: quarto bug
+# connect api not here, but also not searchable in connect docs
+small = tbl_distinct_crumb.select("objectID", "indexName", "crumb0").sort(
+    "indexName", "crumb0"
+)
+
+Reactable(small, pagination=False, wrap=False, resizable=True)
+```
+
+## How many first crumbs are used across sites?
+
+```{python}
+crumb_counts = small.group_by("crumb0").agg(n=pl.len()).sort("n", descending=True)
+
+Reactable(crumb_counts, pagination=False, wrap=False, resizable=True)
+```

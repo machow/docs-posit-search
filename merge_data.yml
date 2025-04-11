@@ -51,7 +51,10 @@
   github_url: https://github.com/rstudio/shinyapps-users-guide
 
 
-# not a product ------------------
+# not on product dropdown ------------------
 - name: helm 
   path: "helm"
   github_url: https://github.com/rstudio/helm
+- name: chronicle
+  path: "chronicle"
+  github_url: https://github.com/rstudio/chronicle
