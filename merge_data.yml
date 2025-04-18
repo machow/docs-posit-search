@@ -1,6 +1,6 @@
 # NOTE: all of these entries are listed on docs.posit.co in the 
 # Product topnav dropdown. (Except for the entries marked at the end)
-- name: base
+- name: Posit Docs
   path: ""
   github_url: https://github.com/rstudio/docs.rstudio.com
 
@@ -8,47 +8,55 @@
 # Posit Team ---------------------
 
 # workbench
-- name: workbench-admin
+- name: Workbench
   path: "ide/server-pro"
   github_url: https://github.com/rstudio/rstudio-pro/tree/main/docs/server
-- name: workbench-user
-  path: "ide/server-pro/user"
-  github_url: https://github.com/rstudio/rstudio-pro/tree/main/docs/user/
-- name: workbench-licenses
+#- name: workbench-user
+#  path: "ide/server-pro/user"
+#  github_url: https://github.com/rstudio/rstudio-pro/tree/main/docs/user/
+- name: Workbench (Licenses)
   path: "ide/licenses"
   github_url: https://github.com/rstudio/rstudio-pro/tree/main/docs/licenses
 
 # connect
-- name: connect
+- name: Connect
   path: "connect"
   github_url: https://github.com/posit-dev/connect/tree/main/docs
 
 # package manager
-# NOTE: this site uses mkdocs. It has a search_index.json file, though.
-# in rspm/search/search_index.json
-#- name: rspm
-#  path: rspm/admin
-#  github_url: https://github.com/rstudio/package-manager/tree/master/docs
+- name: Package Manager
+  path: "rspm"
+  github_url: https://github.com/rstudio/package-manager/tree/main/docs/main
 
 
 # RStudio IDE & Desktop ----------
-- name: ide-user
+- name: RStudio (IDE)
   path: "ide/user"
   github_url: https://github.com/rstudio/rstudio/tree/main/docs/user/rstudio
 
-- name: ide-pro
+- name: RStudio Desktop Pro
   path: "ide/desktop-pro"
   github_url: https://github.com/rstudio/rstudio-pro/tree/main/docs/desktop
 
+# RStudio IDE & Workbench News
+- name: RStudio (IDE) & Workbench News
+  path: "ide/news"
+  github_url: https://github.com/rstudio/rstudio-pro/tree/main/docs/news
+
 
 # Cloud and shinyapps.io ---------
-- name: posit-cloud
+- name: Posit Cloud
   path: "cloud"
   github_url: https://github.com/posit-hosted/lucid-cloudyr-docs
 
-- name: shinyapps
-  path: "shinyapps.io"
-  github_url: https://github.com/rstudio/shinyapps-users-guide
+#- name: shinyapps
+#  path: "shinyapps.io"
+#  github_url: https://github.com/rstudio/shinyapps-users-guide
+
+- name: Posit Connect Cloud
+  path: "connect-cloud"
+  github_url: https://github.com/posit-hosted/vivid-docs
+
 
 
 # not on product dropdown ------------------
