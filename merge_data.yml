@@ -10,7 +10,7 @@
 # workbench
 - name: Workbench
   path: "ide/server-pro"
-  github_url: https://github.com/rstudio/rstudio-pro/tree/main/docs/server
+  github_url: https://github.com/rstudio/rstudio-pro/tree/rel-mariposa-orchid/docs/server
 #- name: workbench-user
 #  path: "ide/server-pro/user"
 #  github_url: https://github.com/rstudio/rstudio-pro/tree/main/docs/user/
