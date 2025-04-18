@@ -180,11 +180,6 @@ with ui.layout_sidebar():
         ui.input_checkbox_group("guide_name", label="Product Guide", choices=[])
 
     @render.text
-    def help_why_is_this_happening():
-        return INDEX_NAME
-
-
-    @render.text
     async def row_count():
         res = await filtered_results()
         return f"Results: {len(res)}"
