@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import sys
 import yaml
 import polars as pl
@@ -15,6 +16,7 @@ sys.path.append(str(Path(__file__).parent))
 from _utils import query
 
 ALL_PRODUCTS = [entry["name"] for entry in yaml.safe_load(open("./merge_data.yml"))]
+INDEX_NAME = os.environ.get("ALGOLIA_INDEX", "shiny-prototype-dev")
 
 client = SearchClient("AK1GB1OWGW", "4ac92cf786d83c1a9bef1d2513c77969")
 
