@@ -38,7 +38,7 @@
   github_url: https://github.com/rstudio/rstudio-pro/tree/main/docs/desktop
 
 # RStudio IDE & Workbench News
-- name: RStudio (IDE) & Workbench News
+- name: Workbench & RStudio IDE News
   path: "ide/news"
   github_url: https://github.com/rstudio/rstudio-pro/tree/main/docs/news
 
@@ -66,3 +66,6 @@
 - name: Posit Connect Cloud
   path: "connect-cloud"
   github_url: https://github.com/posit-hosted/vivid-docs
+- name: Shiny Server
+  path: "shiny-server"
+  github_url: "https://github.com/rstudio/shiny-server-pro/tree/master/doc"
