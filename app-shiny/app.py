@@ -16,7 +16,11 @@ sys.path.append(str(Path(__file__).parent))
 
 from _utils import query
 
+# TODO: currently we pull the names directly from the repo
+# but may want to pull from the index directly.
+# (see fetch_all_results() function below)
 ALL_PRODUCTS = [entry["name"] for entry in yaml.safe_load(open("./merge_data.yml"))]
+
 INDEX_NAME = os.environ.get("ALGOLIA_INDEX", "shiny-prototype-dev")
 
 client = SearchClient("AK1GB1OWGW", "4ac92cf786d83c1a9bef1d2513c77969")
@@ -78,6 +82,17 @@ async def query_df() -> pl.DataFrame:
     # I don't know what Posit Connect Cloud logs from...
     warnings.warn(f"Querying index: {INDEX_NAME}")
     return await query(client, INDEX_NAME, input.text())
+
+# @reactive.calc
+# async def fetch_all_results():
+#     all_results = []
+#     _ = await client.browse_objects(
+#         INDEX_NAME, aggregator=lambda br: all_results.extend(br.hits)
+#     )
+# 
+#     return set([entry["indexName"] for entry in all_results])
+
+
 
 
 @reactive.effect
@@ -159,7 +174,7 @@ async def filtered_results() -> pl.DataFrame:
 
 
 with ui.layout_sidebar():
-    with ui.sidebar(id="left"):
+    with ui.sidebar(id="left", width=275):
         ui.input_text("text", label="Search", value="SSL workbench")
         ui.input_checkbox_group("product_name", label="Product", choices=[])
         ui.input_checkbox_group("guide_name", label="Product Guide", choices=[])
