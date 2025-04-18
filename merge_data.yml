@@ -69,3 +69,6 @@
 - name: Shiny Server
   path: "shiny-server"
   github_url: "https://github.com/rstudio/shiny-server-pro/tree/master/doc"
+- name: Chronicle
+  path: "chronicle"
+  github_url: "https://github.com/rstudio/chronicle/tree/main/docs"
