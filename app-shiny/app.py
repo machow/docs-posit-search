@@ -159,6 +159,10 @@ async def filtered_results() -> pl.DataFrame:
 
 
 with ui.layout_sidebar():
+    @render.text
+    def help_why_is_this_happening():
+        return INDEX_NAME
+
     with ui.sidebar(id="left"):
         ui.input_text("text", label="Search", value="SSL workbench")
         ui.input_checkbox_group("product_name", label="Product", choices=[])
