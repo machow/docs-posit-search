@@ -74,6 +74,7 @@ a.result-url:hover .result-subcard {
 
 @reactive.calc
 async def query_df() -> pl.DataFrame:
+    print(f"Querying index: {INDEX_NAME}")
     return await query(client, INDEX_NAME, input.text())
 
 
