@@ -74,7 +74,7 @@ a.result-url:hover .result-subcard {
 
 @reactive.calc
 async def query_df() -> pl.DataFrame:
-    return await query(client, "shiny-prototype", input.text())
+    return await query(client, INDEX_NAME, input.text())
 
 
 @reactive.effect
