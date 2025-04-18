@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 import sys
 import yaml
+import warnings
 import polars as pl
 from pathlib import Path
 from shiny.express import input, render, ui
@@ -74,7 +75,8 @@ a.result-url:hover .result-subcard {
 
 @reactive.calc
 async def query_df() -> pl.DataFrame:
-    print(f"Querying index: {INDEX_NAME}")
+    # I don't know what Posit Connect Cloud logs from...
+    warnings.warn(f"Querying index: {INDEX_NAME}")
     return await query(client, INDEX_NAME, input.text())
 
 
