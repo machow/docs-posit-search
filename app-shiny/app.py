@@ -16,7 +16,7 @@ from _utils import query
 
 ALL_PRODUCTS = [entry["name"] for entry in yaml.safe_load(open("./merge_data.yml"))]
 
-client = SearchClient("GCKGO8JWSW", "6acc5580fcbeba5b8e560c8a546f346d")
+client = SearchClient("AK1GB1OWGW", "4ac92cf786d83c1a9bef1d2513c77969")
 
 
 def html_search_hit_card(
@@ -72,7 +72,7 @@ a.result-url:hover .result-subcard {
 
 @reactive.calc
 async def query_df() -> pl.DataFrame:
-    return await query(client, input.text())
+    return await query(client, "shiny-prototype", input.text())
 
 
 @reactive.effect

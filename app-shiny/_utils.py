@@ -49,12 +49,12 @@ def hits_to_frame(hits: list[Hit], key_paths: dict[str, Callable]) -> pl.DataFra
 # query -----
 
 
-async def query(client: SearchClient, search: str, limit: int = 200):
+async def query(client: SearchClient, index: str, search: str, limit: int = 200):
     res = await client.search(
         search_method_params={
             "requests": [
                 {
-                    "indexName": "search",
+                    "indexName": index,
                     "query": search,
                     "hitsPerPage": limit,
                 }
