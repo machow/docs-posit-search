@@ -1,15 +1,24 @@
 name: Build and Deploy
-on: [push, pull_request]
-permissions:
-  contents: write
+on:
+  workflow_dispatch:
+    inputs:
+      indexName:
+        description: "Name of the index to build"
+        required: true
+        type: choice
+        options:
+          - posit-search-dev
+          - posit-search
+#permissions:
+#  contents: write
 jobs:
   build-and-deploy:
     concurrency: ci-${{ github.ref }}
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-      actions: write
-      contents: write
+    #permissions:
+    #  pull-requests: write
+    #  actions: write
+    #  contents: write
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v4
@@ -23,26 +32,33 @@ jobs:
         with:
           python-version-file: ".python-version"
 
-      # quarto docs build ----
-      - uses: quarto-dev/quarto-actions/setup@v2
-
-      - name: Build docs
+      - name: Upload dev index
         run: |
-          cd docs
-          quarto render
-          cp search.json _site/search.json
+          uv run 0-merge-search.py
+          uv run 1-upload-index.py
 
-      - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@v4
-        if: ${{ github.ref == 'refs/heads/main' }}
-        with:
-          force: false
-          folder: docs/_site
-          clean-exclude: pr-preview
+      # NOTE: no longer build quarto site, now using a shiny app
+      #       on connect cloud
+      # quarto docs build ----
+      #- uses: quarto-dev/quarto-actions/setup@v2
 
-      - name: Deploy (preview)
-        uses: rossjrw/pr-preview-action@v1
-        # if in a PR
-        if: ${{ github.event_name == 'pull_request' }}
-        with:
-          source-dir: docs/_site
+      #- name: Build docs
+      #  run: |
+      #    cd docs
+      #    quarto render
+      #    cp search.json _site/search.json
+
+      #- name: Deploy
+      #  uses: JamesIves/github-pages-deploy-action@v4
+      #  if: ${{ github.ref == 'refs/heads/main' }}
+      #  with:
+      #    force: false
+      #    folder: docs/_site
+      #    clean-exclude: pr-preview
+
+      #- name: Deploy (preview)
+      #  uses: rossjrw/pr-preview-action@v1
+      #  # if in a PR
+      #  if: ${{ github.event_name == 'pull_request' }}
+      #  with:
+      #    source-dir: docs/_site
