@@ -1,4 +1,4 @@
-# NOTE: all of these entries are listed on docs.posit.co in the 
+# NOTE: Some of these entries are listed on docs.posit.co in the 
 # Product topnav dropdown. (Except for the entries marked at the end)
 - name: Posit Docs
   path: ""
@@ -28,7 +28,6 @@
   path: "rspm"
   github_url: https://github.com/rstudio/package-manager/tree/main/docs/main
 
-
 # RStudio IDE & Desktop ----------
 - name: RStudio (IDE)
   path: "ide/user"
@@ -43,7 +42,6 @@
   path: "ide/news"
   github_url: https://github.com/rstudio/rstudio-pro/tree/main/docs/news
 
-
 # Cloud and shinyapps.io ---------
 - name: Posit Cloud
   path: "cloud"
@@ -53,11 +51,10 @@
 #  path: "shinyapps.io"
 #  github_url: https://github.com/rstudio/shinyapps-users-guide
 
-- name: Posit Connect Cloud
-  path: "connect-cloud"
-  github_url: https://github.com/posit-hosted/vivid-docs
-
-
+# Partnerships ---------
+- name: Partnerships
+  path: "partnerships"
+  github_url: https://github.com/rstudio/partnership-docs
 
 # not on product dropdown ------------------
 - name: helm 
@@ -66,3 +63,6 @@
 - name: chronicle
   path: "chronicle"
   github_url: https://github.com/rstudio/chronicle
+- name: Posit Connect Cloud
+  path: "connect-cloud"
+  github_url: https://github.com/posit-hosted/vivid-docs
