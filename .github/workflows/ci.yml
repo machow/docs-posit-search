@@ -36,6 +36,9 @@ jobs:
         run: |
           uv run 0-merge-search.py
           uv run 1-upload-index.py
+        env:
+          ALGOLIA_APP_ID: ${{ secrets.ALGOLIA_APP_ID }}
+          ALGOLIA_API_KEY_WRITE: ${{ secrets.ALGOLIA_API_KEY_WRITE }}
 
       # NOTE: no longer build quarto site, now using a shiny app
       #       on connect cloud
