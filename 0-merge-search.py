@@ -18,7 +18,7 @@ from pathlib import Path
 def fetch_url_data():
     base_url = "https://docs.posit.co"
     data = yaml.safe_load(open("./merge_data.yml"))
-    name_url = {entry["name"]: f"{base_url}/{entry['path']}" for entry in data}
+    name_url = [(entry["name"], f"{base_url}/{entry['path']}") for entry in data]
     return name_url
 
 
@@ -57,7 +57,7 @@ def shorten_text(text: str, max_length: int) -> str:
 merged_search_items = []
 
 all_urls = fetch_url_data()
-for name, url in all_urls.items():
+for name, url in all_urls:
     url = url.removesuffix("/")
     r = requests.get(f"{url}/search.json")
     r.raise_for_status()
