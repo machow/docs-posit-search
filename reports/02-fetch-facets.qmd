@@ -1,0 +1,31 @@
+---
+title: "Analyze Breadcrumbs"
+jupyter: python3
+---
+
+
+```{python}
+from algoliasearch.search.client import SearchClient
+from algoliasearch.search.models.hit import Hit
+from dotenv import load_dotenv, find_dotenv
+
+load_dotenv(find_dotenv())
+
+client = SearchClient(os.environ["ALGOLIA_APP_ID"], os.environ["ALGOLIA_API_KEY_WRITE"])
+
+```
+
+
+```{python}
+res = await client.search_single_index(
+    index_name="shiny-prototype",
+    search_params={
+        "facets": [
+            "indexName",
+            "crumbs",
+        ],
+    },
+)
+
+res.facets
+```
