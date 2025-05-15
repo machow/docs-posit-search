@@ -14,7 +14,7 @@
 #- name: workbench-user
 #  path: "ide/server-pro/user"
 #  github_url: https://github.com/rstudio/rstudio-pro/tree/main/docs/user/
-- name: Workbench (Licenses)
+- name: Workbench
   path: "ide/licenses"
   github_url: https://github.com/rstudio/rstudio-pro/tree/main/docs/licenses
 
@@ -28,19 +28,20 @@
   path: "rspm"
   github_url: https://github.com/rstudio/package-manager/tree/main/docs/main
 
+# partnerships
+- name: Partnerships
+  path: "partnerships"
+  github_url: https://github.com/rstudio/partnership-docs
+
+
 # RStudio IDE & Desktop ----------
-- name: RStudio (IDE)
+- name: RStudio IDE
   path: "ide/user"
   github_url: https://github.com/rstudio/rstudio/tree/main/docs/user/rstudio
 
 - name: RStudio Desktop Pro
   path: "ide/desktop-pro"
   github_url: https://github.com/rstudio/rstudio-pro/tree/main/docs/desktop
-
-# RStudio IDE & Workbench News
-- name: Workbench & RStudio IDE News
-  path: "ide/news"
-  github_url: https://github.com/rstudio/rstudio-pro/tree/main/docs/news
 
 # Cloud and shinyapps.io ---------
 - name: Posit Cloud
@@ -51,24 +52,21 @@
 #  path: "shinyapps.io"
 #  github_url: https://github.com/rstudio/shinyapps-users-guide
 
-# Partnerships ---------
-- name: Partnerships
-  path: "partnerships"
-  github_url: https://github.com/rstudio/partnership-docs
-
 # not on product dropdown ------------------
-- name: helm 
+- name: Other
   path: "helm"
   github_url: https://github.com/rstudio/helm
-- name: chronicle
-  path: "chronicle"
-  github_url: https://github.com/rstudio/chronicle
-- name: Posit Connect Cloud
-  path: "connect-cloud"
-  github_url: https://github.com/posit-hosted/vivid-docs
-- name: Shiny Server
-  path: "shiny-server"
-  github_url: "https://github.com/rstudio/shiny-server-pro/tree/master/doc"
-- name: Chronicle
+- name: Other
   path: "chronicle"
   github_url: "https://github.com/rstudio/chronicle/tree/main/docs"
+- name: Other #Posit Connect Cloud
+  path: "connect-cloud"
+  github_url: https://github.com/posit-hosted/vivid-docs
+- name: Other # Shiny Server
+  path: "shiny-server"
+  github_url: "https://github.com/rstudio/shiny-server-pro/tree/master/doc"
+
+# RStudio IDE & Workbench News
+- name: Other
+  path: "ide/news"
+  github_url: https://github.com/rstudio/rstudio-pro/tree/main/docs/news
